@@ -1,79 +1,138 @@
-"""
-Adapted from: https://academy.langchain.com/
-"""
+### Evaluation prompt templates for the deep research multi-agentsystem #######
+###############################################################################
+# -----------------------------------------------------------------------------
+# Adapted from: https://github.com/langchain-ai/deep_research_from_scratch/
+# -----------------------------------------------------------------------------
 
-# Used in ./evaluate_triage.py
-# {inputs}, {outputs}, {reference_outputs}
-TRIAGE_CLASSIFICATION_PROMPT = '''<Task>
-You are evaluating the classification of emails.
 
-They should be be classified into one of the following categories:
-- ignore
-- notify
-- respond
+# {criterion}, {research_brief} are variables that will be replaced with the actual criterion and research brief.
+BRIEF_CRITERIA = '''# Brief Criteria Evaluator
 
-You will be given:
-- the email
-- the agent's reasoning and decision as a list of messages 
-- the correct classification
+<role>
+You are an expert research brief evaluator specializing in assessing whether generated research briefs accurately capture user-specified criteria without loss of important details.
+</role>
 
-Your job is to evaluate the agent's reasoning and decision relative to the correct classification.
-</Task>
+<task>
+Determine if the research brief adequately captures the specific success criterion provided. Return a binary assessment with detailed reasoning.
+</task>
 
-<email>
-{inputs}
-</email>
+<evaluation_context>
+Research briefs are critical for guiding downstream research agents. Missing or inadequately captured criteria can lead to incomplete research that fails to address user needs. Accurate evaluation ensures research quality and user satisfaction.
+</evaluation_context>
 
-<agent response>
-{outputs}
-</agent response>
+<criterion_to_evaluate>
+{criterion}
+</criterion_to_evaluate>
 
-<correct classification>
-{reference_outputs}
-</correct classification>
+<research_brief>
+{research_brief}
+</research_brief>
+
+<evaluation_guidelines>
+CAPTURED (criterion is adequately represented) if:
+- The research brief explicitly mentions or directly addresses the criterion
+- The brief contains equivalent language or concepts that clearly cover the criterion
+- The criterion's intent is preserved even if worded differently
+- All key aspects of the criterion are represented in the brief
+
+NOT CAPTURED (criterion is missing or inadequately addressed) if:
+- The criterion is completely absent from the research brief
+- The brief only partially addresses the criterion, missing important aspects
+- The criterion is implied but not clearly stated or actionable for researchers
+- The brief contradicts or conflicts with the criterion
+
+<evaluation_examples>
+Example 1 - CAPTURED:
+Criterion: 'Current age is 25'
+Brief: '...investment advice for a 25-year-old investor...'
+Judgment: CAPTURED - age is explicitly mentioned
+
+Example 2 - NOT CAPTURED:
+Criterion: 'Monthly rent below 7k'
+Brief: '...find apartments in Manhattan with good amenities...'
+Judgment: NOT CAPTURED - budget constraint is completely missing
+
+Example 3 - CAPTURED:
+Criterion: 'High risk tolerance'
+Brief: '...willing to accept significant market volatility for higher returns...'
+Judgment: CAPTURED - equivalent concept expressed differently
+
+Example 4 - NOT CAPTURED:
+Criterion: 'Doorman building required'
+Brief: '...find apartments with modern amenities...'
+Judgment: NOT CAPTURED - specific doorman requirement not mentioned
+</evaluation_examples>
+</evaluation_guidelines>
+
+<output_instructions>
+1. Carefully examine the research brief for evidence of the specific criterion
+2. Look for both explicit mentions and equivalent concepts
+3. Provide specific quotes or references from the brief as evidence
+4. Be systematic - when in doubt about partial coverage, lean toward NOT CAPTURED for quality assurance
+5. Focus on whether a researcher could act on this criterion based on the brief alone
+</output_instructions>
 '''
 
-# Used in ../tests/test_email_assistant.py
-RESPONSE_CRITERIA_INSTRUCTION = '''You are evaluating an email assistant that works on behalf of a user.
+# {research_brief}, {success_criteria} are variables that will be replaced with the actual research brief and success criteria.
+BRIEF_HALLUCINATION = '''# Brief Hallucination Evaluator
 
-You will see a sequence of messages, starting with an email sent to the user. 
+<role>
+You are a meticulous research brief auditor specializing in identifying unwarranted assumptions that could mislead research efforts.
+</role>
 
-You will then see the assistant's response to this email on behalf of the user, which includes any tool calls made (e.g., write_email, schedule_meeting, check_calendar_availability, DoneSchema).
+<task>  
+Determine if the research brief makes assumptions beyond what the user explicitly provided. Return a binary pass/fail judgment.
+</task>
 
-You will also see a list of criteria that the assistant's response must meet.
+<evaluation_context>
+Research briefs should only include requirements, preferences, and constraints that users explicitly stated or clearly implied. Adding assumptions can lead to research that misses the user's actual needs.
+</evaluation_context>
 
-Your job is to evaluate if the assistant's response meets ALL the criteria bullet points provided.
+<research_brief>
+{research_brief}
+</research_brief>
 
-IMPORTANT EVALUATION INSTRUCTIONS:
-1. The assistant's response is formatted as a list of messages.
-2. The response criteria are formatted as bullet points (-)
-3. You must evaluate the response against EACH bullet point individually
-4. ALL bullet points must be met for the response to receive a 'True' grade
-5. For each bullet point, cite specific text from the response that satisfies or fails to satisfy it
-6. Be objective and rigorous in your evaluation
-7. In your justification, clearly indicate which criteria were met and which were not
-7. If ANY criteria are not met, the overall grade must be 'False'
+<success_criteria>
+{success_criteria}
+</success_criteria>
 
-Your output will be used for automated testing, so maintain a consistent evaluation approach.\
-'''
+<evaluation_guidelines>
+PASS (no unwarranted assumptions) if:
+- Brief only includes explicitly stated user requirements
+- Any inferences are clearly marked as such or logically necessary
+- Source suggestions are general recommendations, not specific assumptions
+- Brief stays within the scope of what the user actually requested
 
-# Used in ../tests/test_hitl.py
-# {feedback}
-HITL_FEEDBACK_INSTRUCTION = '''You are evaluating an email assistant's response to determine if it meets specific criteria.
+FAIL (contains unwarranted assumptions) if:
+- Brief adds specific preferences user never mentioned
+- Brief assumes demographic, geographic, or contextual details not provided
+- Brief narrows scope beyond user's stated constraints
+- Brief introduces requirements user didn't specify
 
-This is an email assistant that is used to respond to emails. 
+<evaluation_examples>
+Example 1 - PASS:
+User criteria: ['Looking for coffee shops', 'In San Francisco'] 
+Brief: '...research coffee shops in San Francisco area...'
+Judgment: PASS - stays within stated scope
 
-Review our initial email response and the user feedback given to update the email response. 
+Example 2 - FAIL:
+User criteria: ['Looking for coffee shops', 'In San Francisco']
+Brief: '...research trendy coffee shops for young professionals in San Francisco...'
+Judgment: FAIL - assumes 'trendy' and 'young professionals' demographics
 
-Here is the feedback: {feedback}. 
+Example 3 - PASS:
+User criteria: ['Budget under $3000', '2 bedroom apartment']
+Brief: '...find 2-bedroom apartments within $3000 budget, consulting rental sites and local listings...'
+Judgment: PASS - source suggestions are appropriate, no preference assumptions
 
-Assess whether the final email response addresses the feedback that we gave.\
-'''
+Example 4 - FAIL:
+User criteria: ['Budget under $3000', '2 bedroom apartment'] 
+Brief: '...find modern 2-bedroom apartments under $3000 in safe neighborhoods with good schools...'
+Judgment: FAIL - assumes 'modern', 'safe', and 'good schools' preferences
+</evaluation_examples>
+</evaluation_guidelines>
 
-# Used in ../tests/test_memory.py
-MEMORY_UPDATE_INSTRUCTION = '''This is an email assistant that uses memory to update its response preferences. 
-
-Review the initial response preferences and the updated response preferences. 
-
-Assess whether the updated response preferences are more accurate than the initial response preferences.
+<output_instructions>
+Carefully scan the brief for any details not explicitly provided by the user. Be strict - when in doubt about whether something was user-specified, lean toward FAIL.
+</output_instructions>
 '''

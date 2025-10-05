@@ -1,5 +1,3 @@
-# Import test data for testing
-from .email_test_dataset import email_inputs, expected_tool_calls
+from prompts import BRIEF_CRITERIA, BRIEF_HALLUCINATION
 
-__all__ = ['email_inputs', 'expected_tool_calls']
-
+__all__ = ['BRIEF_CRITERIA', 'BRIEF_HALLUCINATION']
