@@ -1,0 +1,60 @@
+[project]
+name = 'deep-research-multi-agent'   # 권장: 소문자, 하이픈 사용
+version = '0.0.1'
+description = 'Deep Research Multi-Agent'
+authors = [
+    { name = 'Jinsoo Park', email = 'jinsoo@snu.ac.kr' }
+]
+readme = 'README.md'
+requires-python = '>=3.13'
+
+dependencies = [
+    'langgraph',         # LangGraph 필수
+    'langchain',
+    'langchain-openai',
+    'langchain-tavily',
+    'tavily-python',
+    'python-dotenv',     # .env 파일 사용
+    # 기타 필요한 패키지 여기에 추가
+]
+
+[project.optional-dependencies]
+dev = [
+    'mypy>=1.11.1',
+    'ruff>=0.6.1'
+]
+
+[build-system]
+requires = ['setuptools>=75.3.0', 'wheel']
+build-backend = 'setuptools.build_meta'
+
+[tool.setuptools]
+package-dir = {'' = 'src'}
+
+[tool.setuptools.packages.find]
+where = ['src']
+
+[tool.setuptools.package-data]
+'*' = ['py.typed']
+
+[tool.ruff]
+lint.select = [
+    'E',    # pycodestyle
+    'F',    # pyflakes
+    'I',    # isort
+    'D',    # pydocstyle
+    'D401', # First line should be in imperative mood
+    'T201',
+    'UP',
+]
+lint.ignore = [
+    'UP006',
+    'UP007',
+    'UP035',
+    'D417',
+    'E501',
+]
+[tool.ruff.lint.per-file-ignores]
+'tests/*' = ['D', 'UP']
+[tool.ruff.lint.pydocstyle]
+convention = 'google'
