@@ -5,6 +5,7 @@ from langchain_core.messages import BaseMessage
 
 from typing import Annotated, Sequence
 
+
 class AgentInputState(MessagesState):
     """
     전체 에이전트의 입력 상태를 정의하는 그래프 상태 클래스
@@ -14,9 +15,10 @@ class AgentInputState(MessagesState):
     Input state for the full agent - only contains messages from user input.
 
     Attributes:
-    messages (list[BaseMessage]): 사용자 입력 메시지 목록
+        messages (list[BaseMessage]): 사용자 입력 메시지 목록
     """
     pass
+
 
 class AgentState(MessagesState):
     """

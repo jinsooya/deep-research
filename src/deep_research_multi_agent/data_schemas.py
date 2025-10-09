@@ -44,3 +44,27 @@ class ResearchQuestionSchema(BaseModel):
         #description='연구를 수행하는 데 지침으로 활용할 연구 질문을 담는 필드'
         description='A research question that will be used to guide the research.'
     )
+
+
+class SummarySchema(BaseModel):
+    """
+    웹페이지 콘텐츠 요약을 정의하는 Pydantic 데이터 스키마  
+    Schema for webpage content summarization.
+
+    Args:
+        summary (str):  
+            웹페이지의 핵심 내용을 간결하게 요약한 텍스트를 담는 필드  
+        key_excerpts (str):  
+            콘텐츠에서 중요한 인용문이나 핵심 구절을 담는 필드
+    """
+    summary: str = Field(
+        ...,
+        #description='웹페이지의 핵심 내용을 간결하게 요약한 텍스트를 담는 필드'
+        description='Concise summary of the webpage content.'
+    )
+
+    key_excerpts: str = Field(
+        ...,
+        #description='콘텐츠에서 중요한 인용문이나 핵심 구절을 담는 필드'
+        description='Important quotes and excerpts from the content.'
+    )   

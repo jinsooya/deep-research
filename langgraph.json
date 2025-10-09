@@ -1,7 +1,8 @@
 {
     "dockerfile_lines": [],
     "graphs": {
-      "Deep Research Scoping": "src/deep_research_multi_agent/research_agent_scope.py:scope_research_workflow"
+      "Deep Research Scoping": "src/deep_research_multi_agent/research_agent_scope.py:scope_research_workflow",
+      "Research Agent": "src/deep_research_multi_agent/research_agent.py:researcher_workflow"
     },
     "python_version": "3.13",
     "env": ".env",

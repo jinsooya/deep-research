@@ -1,7 +1,7 @@
 from langsmith import Client
 from dotenv import load_dotenv
 
-import deep_research_test_dataset
+import deep_research_scope_test_dataset
 
 # load_dotenv('.env')
 load_dotenv('/Users/jinsoopark/Dropbox/_data/projects/python/ai/deep_research/.env')
@@ -30,16 +30,16 @@ if not client.has_dataset(dataset_name=dataset_name):
         dataset_id=dataset.id,
         examples=[
             {   
-                'inputs': {'messages': deep_research_test_dataset.conversation_1},
-                'outputs': {'criteria': deep_research_test_dataset.criteria_1}
+                'inputs': {'messages': deep_research_scope_test_dataset.conversation_1},
+                'outputs': {'criteria': deep_research_scope_test_dataset.criteria_1}
             },
             {
-                'inputs': {'messages': deep_research_test_dataset.conversation_2},
-                'outputs': {'criteria': deep_research_test_dataset.criteria_2}
+                'inputs': {'messages': deep_research_scope_test_dataset.conversation_2},
+                'outputs': {'criteria': deep_research_scope_test_dataset.criteria_2}
             },
             {
-                'inputs': {'messages': deep_research_test_dataset.conversation_3},
-                'outputs': {'criteria': deep_research_test_dataset.criteria_3}
+                'inputs': {'messages': deep_research_scope_test_dataset.conversation_3},
+                'outputs': {'criteria': deep_research_scope_test_dataset.criteria_3}
             }
         ]
     )

@@ -5,6 +5,7 @@ Summary: Deep Research Multi-Agent
 Author-email: Jinsoo Park <jinsoo@snu.ac.kr>
 Requires-Python: >=3.13
 Description-Content-Type: text/markdown
+License-File: LICENSE
 Requires-Dist: langgraph
 Requires-Dist: langchain
 Requires-Dist: langchain-openai
@@ -14,5 +15,6 @@ Requires-Dist: python-dotenv
 Provides-Extra: dev
 Requires-Dist: mypy>=1.11.1; extra == "dev"
 Requires-Dist: ruff>=0.6.1; extra == "dev"
+Dynamic: license-file
 
 # Deep Research Multi-Agents based on LangGraph
