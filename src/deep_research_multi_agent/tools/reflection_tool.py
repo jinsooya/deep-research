@@ -5,12 +5,12 @@ from langchain_core.tools import tool
 #           실제 시그니처를 매칭하기 때문에 영어를 사용해야 한다.
 #           그리고 : 뒤에 줄바꿈이 있으면 안되다.
 @tool(parse_docstring=True)
-def think_tool(reflection: str) -> str:
+def reflection_tool(reflection: str) -> str:
     """
     연구 진행 상황과 의사결정에 대해 전략적으로 성찰(reflection)하기 위한 도구 함수  
 
     이 도구는 각 검색 이후에 결과를 분석하고, 다음 단계를 체계적으로 계획할 때 사용한다.
-    이는 리서치 워크플로우 내에서 **품질 높은 의사결정을 위한 의도적 “사고 정지 단계”**를 제공한다. 
+    이는 리서치 워크플로우 내에서 **품질 높은 의사결정을 위한 의도적 "사고 정지 단계"**를 제공한다. 
 
     사용 시점:
     - 검색 결과를 받은 후: 어떤 핵심 정보를 발견했는가?  

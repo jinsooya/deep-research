@@ -28,7 +28,7 @@ from deep_research_multi_agent.prompts import (
 # --- 연구 조사 에이전트 노드 클래스 
 class ResearchAgentNode:
     """
-    연구 에이전트의 핵심 의사결정 노드 클래스  
+    연구 조사 에이전트의 핵심 의사결정 노드 클래스  
     Node class for the research agent’s decision-making process
 
     이 노드는 연구 중간 단계에서 언어 모델(LLM)을 사용하여  
@@ -48,7 +48,7 @@ class ResearchAgentNode:
         Args:
             runnable (Runnable): LangChain 실행 가능 객체 (예: 언어 모델)
             tools (list[BaseTool]): 에이전트가 사용할 수 있는 도구 객체 리스트  
-                예를 들어, 웹 검색(`tavily_search`)이나 반성(reflection) 도구(`think_tool`) 등을 포함한다.
+                예를 들어, 웹 검색(`tavily_search`)이나 생각 도구(`reflection_tool`) 등을 포함한다.
         """
         self.runnable = runnable  # (note) model_with_tools
     
@@ -80,7 +80,9 @@ class ResearchAgentNode:
         return {
             'researcher_messages': [
                 self.runnable.invoke(
-                    [SystemMessage(content=RESEARCH_AGENT_INSTRUCTION)] 
+                    [SystemMessage(
+                        content=RESEARCH_AGENT_INSTRUCTION.format(date=get_today_str())
+                    )] 
                     + state['researcher_messages']
                 )
             ]
@@ -90,7 +92,7 @@ class ResearchAgentNode:
     @staticmethod
     def route(state: ResearcherState) -> Literal['tools', 'condense research']:
         """
-        연구를 계속 진행할지 또는 압축 단계로 이동할지 결정한다.
+        연구 조사를 계속 진행할지 또는 압축 단계로 이동할지 결정한다.
         
         LLM이 추가 도구 호출을 수행했는지 여부를 확인하여  
         - 도구 호출이 있다면 'tools'로 이동 (추가 검색)
@@ -131,11 +133,11 @@ class ResearchAgentNode:
 # --- 도구 처리 노드 클래스
 class ToolsNode:
     """
-    연구 워크플로우에서 도구 실행을 담당하는 노드 클래스  
+    연구 조사 워크플로우에서 도구 실행을 담당하는 노드 클래스  
 
     이 노드는 LLM이 이전 단계에서 요청한 도구 호출을 실제로 수행하고,  
     각 도구의 실행 결과를 `ToolMessage` 형태로 상태에 반영한다.  
-    즉, 연구 에이전트의 '도구 실행 단계(tool execution step)'를 담당한다.
+    즉, 연구 조사 에이전트의 '도구 실행 단계(tool execution step)'를 담당한다.
 
     Node class responsible for executing tool calls within the research workflow
 
@@ -226,7 +228,7 @@ class ResearchCondensationNode:
         Compress research findings into a concise summary.
     
         Takes all the research messages and tool outputs and creates
-        a compressed summary suitable for the supervisor's decision-making.
+        a condensed summary suitable for the supervisor's decision-making.
     
         Args:
             state (ResearcherState): 이전 상호작용을 포함한 현재 그래프 상태
@@ -257,7 +259,7 @@ class ResearchCondensationNode:
         ]
         
         return {
-            'compressed_research': str(response.content),
+            'condensed_research': str(response.content),
             'raw_notes': ['\n'.join(raw_notes)]
         }
          
@@ -265,7 +267,7 @@ class ResearchCondensationNode:
 # --- 도구 구성 -----------------------------------------------------------------
 # 도구와 도구 목록을 가져온다
 # tools = get_tools()
-tools = get_tools(tool_names=['tavily_search', 'think_tool'])
+tools = get_tools(tool_names=['tavily_search', 'reflection_tool'])
 tools_by_name = get_tools_by_name(tools)
 
 

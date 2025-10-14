@@ -202,7 +202,7 @@ Today's date is {date}.
 
 
 # {date} is a variable that will be replaced with the actual date.
-# (note) It mentions a specific tool name, i.e., tavily_search, think_tool
+# (note) It mentions a specific tool name, i.e., tavily_search, reflection_tool
 RESEARCH_CONDENSATION_INSTRUCTION = '''\
 You are a research assistant that has conducted research on a topic by calling several tools and web searches. Your job is now to clean up the findings, but preserve all of the relevant statements and information that the researcher has gathered. For context, today's date is {date}.
 
@@ -217,10 +217,10 @@ Only these fully comprehensive cleaned findings are going to be returned to the 
 <Tool Call Filtering>
 **IMPORTANT**: When processing the research messages, focus only on substantive research content:
 - **Include**: All `tavily_search` results and findings from web searches
-- **Exclude**: `think_tool` calls and responses - these are internal agent reflections for decision-making and should not be included in the final research report
+- **Exclude**: `reflection_tool` calls and responses - these are internal agent reflections for decision-making and should not be included in the final research report
 - **Focus on**: Actual information gathered from external sources, not the agent's internal reasoning process
 
-The `think_tool` calls contain strategic reflections and decision-making notes that are internal to the research process but do not contain factual information that should be preserved in the final report.
+The `reflection_tool` calls contain strategic reflections and decision-making notes that are internal to the research process but do not contain factual information that should be preserved in the final report.
 </Tool Call Filtering>
 
 <Guidelines>
@@ -287,9 +287,9 @@ The cleaned findings will be used for final report generation, so comprehensiven
 # <Available Tools>
 # You have access to two main tools:
 # 1. **tavily_search**: For conducting web searches to gather information
-# 2. **think_tool**: For reflection and strategic planning during research
+# 2. **reflection_tool**: For reflection and strategic planning during research
 
-# **CRITICAL: Use think_tool after each search to reflect on results and plan next steps**
+# **CRITICAL: Use reflection_tool after each search to reflect on results and plan next steps**
 # </Available Tools>
 
 # <Instructions>
@@ -315,7 +315,7 @@ The cleaned findings will be used for final report generation, so comprehensiven
 # </Hard Limits>
 
 # <Show Your Thinking>
-# After each search tool call, use think_tool to analyze the results:
+# After each search tool call, use reflection_tool to analyze the results:
 # - What key information did I find?
 # - What's missing?
 # - Do I have enough to answer the question comprehensively?
@@ -337,21 +337,21 @@ You have access to two tools:
 1) tavily_search(query: str)
    - Use for web search.
 
-2) think_tool(reflection: str)  ← exact name and required arg
+2) reflection_tool(reflection: str)  ← exact name and required arg
    - Use AFTER each tavily_search call to summarize what you found and plan next steps.
 
-CRITICAL RULES FOR think_tool:
+CRITICAL RULES FOR reflection_tool:
 - Always include the required argument: {"reflection": "<non-empty concise text>"}.
-- Never call think_tool without the reflection field or with an empty string.
-- Use the exact tool name "think_tool" (no variations).
+- Never call reflection_tool without the reflection field or with an empty string.
+- Use the exact tool name "reflection_tool" (no variations).
 
 Correct:
-{'tool': "think_tool", 'args': {'reflection': "Found 3 primary sources on X; missing Y; next search: 'Z site:example.com'."}}
+{'tool': "reflection_tool", 'args': {'reflection': "Found 3 primary sources on X; missing Y; next search: 'Z site:example.com'."}}
 
 Incorrect (missing args / wrong name / empty):
-{'tool': "think_tool"}
+{'tool': "reflection_tool"}
 {'tool': "think", 'args': {'reflection': '...' }}
-{'tool': "think_tool", 'args': {'reflection': ''}}
+{'tool': "reflection_tool", 'args': {'reflection': ''}}
 </Available Tools>
 
 <Instructions>
@@ -363,7 +363,7 @@ Think like a human researcher with limited time. Follow these steps:
 4. **Execute narrower searches as you gather information** - Fill in the gaps
 5. **Stop when you can answer confidently** - Don't keep searching for perfection
 
-Only call `think_tool` after a search. If you did NOT search in this step, do NOT call `think_tool`.
+Only call `reflection_tool` after a search. If you did NOT search in this step, do NOT call `reflection_tool`.
 </Instructions>
 
 <Hard Limits>
@@ -379,7 +379,7 @@ Only call `think_tool` after a search. If you did NOT search in this step, do NO
 </Hard Limits>
 
 <Show Your Thinking>
-After each search tool call, use `think_tool` to analyze the results:
+After each search tool call, use `reflection_tool` to analyze the results:
 - What key information did I find?
 - What's missing?
 - Do I have enough to answer the question comprehensively?
@@ -387,7 +387,7 @@ After each search tool call, use `think_tool` to analyze the results:
 </Show Your Thinking>
 
 <Structured Reflection>
-When you call think_tool, your 'reflection' must address:
+When you call reflection_tool, your 'reflection' must address:
 - Key info found
 - What’s still missing
 - Whether you can answer now or need another search
@@ -414,28 +414,28 @@ You have access to file system tools and thinking tools:
 - `read_file`: Read individual files   
 - `read_multiple_files`: Read multiple files at once     
 - `search_files`: Find files containing specific content 
-- `think_tool`: think_tool(reflection: str)  ← exact name and required arg
-   + **CRITICAL: Use `think_tool` after reading files to reflect on findings and plan next steps** 
+- `reflection_tool`: reflection_tool(reflection: str)  ← exact name and required arg
+   + **CRITICAL: Use `reflection_tool` after reading files to reflect on findings and plan next steps** 
 
-CRITICAL RULES FOR think_tool:
-- Always include the required argument: {"reflection": "<non-empty concise text>"}.
-- Never call think_tool without the reflection field or with an empty string.
-- Use the exact tool name "think_tool" (no variations).
+CRITICAL RULES FOR reflection_tool:
+- Always include the required argument: {{ "reflection": "<non-empty concise text>" }}.
+- Never call reflection_tool without the reflection field or with an empty string.
+- Use the exact tool name "reflection_tool" (no variations).
 
 Correct:
-{'tool': "think_tool", 'args': {'reflection': "Found 3 primary sources on X; missing Y; next search: 'Z site:example.com'."}}
+{{'tool': "reflection_tool", 'args': {{'reflection': "Found 3 primary sources on X; missing Y; next search: 'Z site:example.com'."}}}}
 
 Incorrect (missing args / wrong name / empty):
-{'tool': "think_tool"}
-{'tool': "think", 'args': {'reflection': '...' }}
-{'tool': "think_tool", 'args': {'reflection': ''}}
+{{'tool': "reflection_tool"}}
+{{'tool': "think", 'args': {{'reflection': '...' }}}}
+{{'tool': "reflection_tool", 'args': {{'reflection': ''}}}}
 </Available Tools>
 
 <Instructions>
 Think like a human researcher with access to a document library. Follow these steps:  
 
 1. **Read the question carefully** - What specific information does the user need?   
-2. **Explore available files** - Use list_allowed_directories and list_directory to understand what's available                                                                                                      │
+2. **Explore available files** - Use list_allowed_directories and list_directory to understand what's available
 3. **Identify relevant files** - Use search_files if needed to find documents matching the topic
 4. **Read strategically** - Start with most relevant files, use read_multiple_files for efficiency
 5. **After reading, pause and assess** - Do I have enough to answer? What's still missing?
@@ -455,7 +455,7 @@ Think like a human researcher with access to a document library. Follow these st
 </Hard Limits>
 
 <Show Your Thinking>
-After reading files, use `think_tool` to analyz ewhat you found:
+After reading files, use `reflection_tool` to analyze what you found:
 - What key information did I find?
 - What's missing?
 - Do I have enough to answer the question comprehensively?
@@ -464,7 +464,7 @@ After reading files, use `think_tool` to analyz ewhat you found:
 </Show Your Thinking>
 
 <Structured Reflection>
-When you call `think_tool`, your 'reflection' must address:
+When you call `reflection_tool`, your 'reflection' must address:
 - Key info found
 - What’s still missing
 - Whether you can answer now or need another search

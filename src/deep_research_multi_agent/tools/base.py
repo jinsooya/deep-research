@@ -1,7 +1,7 @@
 from langchain_core.tools import BaseTool
 
 from deep_research_multi_agent.tools.search_tools import tavily_search
-from deep_research_multi_agent.tools.think_tool import think_tool
+from deep_research_multi_agent.tools.reflection_tool import reflection_tool
 
 
 def get_tools(tool_names: list[str] | None = None) -> list[BaseTool]:
@@ -18,7 +18,7 @@ def get_tools(tool_names: list[str] | None = None) -> list[BaseTool]:
     # 기본 도구 딕셔너리를 구성한다.
     all_tools: dict[str, BaseTool] = {
         'tavily_search': tavily_search,
-        'think_tool': think_tool
+        'reflection_tool': reflection_tool
     }
     if tool_names is None:
         return list(all_tools.values())
