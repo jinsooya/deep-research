@@ -1,4 +1,4 @@
-from langchain_core.tools import tool
+from langchain.tools import tool
 
 
 # (caution) Docstring을 자동으로 파싱해서 함수의 매개변수(Args: 섹션)와 

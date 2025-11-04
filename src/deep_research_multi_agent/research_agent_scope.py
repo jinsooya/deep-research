@@ -13,9 +13,9 @@
 
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import Command
-from langchain_core.messages import HumanMessage, AIMessage, get_buffer_string
-from langchain_core.runnables import Runnable
-from langchain_core.runnables.config import RunnableConfig
+from langchain_core.messages import get_buffer_string
+from langchain_core.runnables import Runnable, RunnableConfig
+from langchain.messages import HumanMessage, AIMessage
 from langchain.chat_models import init_chat_model
 
 from typing import Literal

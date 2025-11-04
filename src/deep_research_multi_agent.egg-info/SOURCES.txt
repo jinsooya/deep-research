@@ -3,10 +3,13 @@ README.md
 pyproject.toml
 src/deep_research_multi_agent/__init__.py
 src/deep_research_multi_agent/data_schemas.py
+src/deep_research_multi_agent/deep_research.py
 src/deep_research_multi_agent/prompts.py
 src/deep_research_multi_agent/py.typed
 src/deep_research_multi_agent/research_agent.py
+src/deep_research_multi_agent/research_agent_mcp.py
 src/deep_research_multi_agent/research_agent_scope.py
+src/deep_research_multi_agent/research_multi_agent_supervisor.py
 src/deep_research_multi_agent/state_schemas_research.py
 src/deep_research_multi_agent/state_schemas_scope.py
 src/deep_research_multi_agent/utils.py
@@ -17,5 +20,9 @@ src/deep_research_multi_agent.egg-info/requires.txt
 src/deep_research_multi_agent.egg-info/top_level.txt
 src/deep_research_multi_agent/tools/__init__.py
 src/deep_research_multi_agent/tools/base.py
+src/deep_research_multi_agent/tools/mcp.py
+src/deep_research_multi_agent/tools/reflection_tool.py
 src/deep_research_multi_agent/tools/search_tools.py
-src/deep_research_multi_agent/tools/think_tool.py
+src/deep_research_multi_agent/tools/supervisor_tools.py
+test/test_deep_research_agent_decision_dataset.py
+test/test_deep_research_supervisor_dataset.py

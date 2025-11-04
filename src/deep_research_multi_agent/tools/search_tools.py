@@ -1,9 +1,9 @@
-# import os
+import os
 from langchain.chat_models import init_chat_model
-from langchain_core.tools import tool, InjectedToolArg
+from langchain.tools import tool, InjectedToolArg
 from tavily import TavilyClient
 from typing import Annotated, Literal
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 from deep_research_multi_agent.utils import (
     deduplicate_search_results, 
@@ -12,10 +12,10 @@ from deep_research_multi_agent.utils import (
 )
 
 # Load environment variables
-# load_dotenv()
+load_dotenv()
 
-# tavily_client = TavilyClient(api_key=os.getenv('TAVILY_API_KEY'))
-tavily_client = TavilyClient()
+tavily_client = TavilyClient(api_key=os.getenv('TAVILY_API_KEY'))
+# tavily_client = TavilyClient()
 
 
 summarization_model = init_chat_model(
@@ -84,8 +84,8 @@ def tavily_search(
     topic: Annotated[Literal['general', 'news', 'finance'], InjectedToolArg] = 'general',
 ) -> str:
     """
-    Tavily 검색 API를 사용해 콘텐츠 요약과 함께 검색 결과를 가져오는 도구 함수  
     Fetch results from Tavily search API with content summarization.
+    Tavily 검색 API를 사용해 콘텐츠 요약과 함께 검색 결과를 가져오는 도구 함수  
 
     Args:
         query (str): A single search query to execute  

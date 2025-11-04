@@ -2,7 +2,10 @@
     "dockerfile_lines": [],
     "graphs": {
       "Deep Research Scoping": "src/deep_research_multi_agent/research_agent_scope.py:scope_research_workflow",
-      "Research Agent": "src/deep_research_multi_agent/research_agent.py:researcher_workflow"
+      "Research Agent": "src/deep_research_multi_agent/research_agent.py:researcher_workflow",
+      "Research Agent with MCP": "src/deep_research_multi_agent/research_agent_mcp.py:researcher_mcp_workflow",
+      "Supervisor Agent": "src/deep_research_multi_agent/research_multi_agent_supervisor.py:supervisor_workflow",
+      "Deep Research Multi-Agent": "src/deep_research_multi_agent/deep_research.py:deep_research_workflow"
     },
     "python_version": "3.13",
     "env": ".env",

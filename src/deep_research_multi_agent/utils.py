@@ -1,5 +1,6 @@
 from langchain_core.runnables import Runnable
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import BaseMessage, filter_messages
+from langchain.messages import HumanMessage
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -7,6 +8,15 @@ from typing import Any
 from deep_research_multi_agent.data_schemas import SummarySchema
 from deep_research_multi_agent.prompts import WEBPAGE_SUMMARY_INSTRUCTION
 
+# --- 함수 시그니처 목록 ---------------------------------------------------------
+# deduplicate_search_results(search_results: list[dict[str, Any]]) -> dict[str, dict[str, Any]]
+# get_today_str() -> str
+# get_current_dir() -> Path
+# get_notes_from_tool_calls(messages: list[BaseMessage]) -> list[str]
+# format_search_output(summarized_results: dict[str, dict[str, str]]) -> str
+# process_search_results(runnable: Runnable, unique_results: dict[str, dict[str, Any]]) -> dict[str, dict[str, str]]
+# summarize_webpage_content(model: Runnable, webpage_content: str) -> str
+# -----------------------------------------------------------------------------
 
 def get_today_str() -> str:
     """
@@ -228,3 +238,29 @@ def format_search_output(summarized_results: dict[str, dict[str, str]]) -> str:
     # 최종 포맷 문자열 반환
     # return formatted string
     return formatted_output 
+
+
+def get_notes_from_tool_calls(messages: list[BaseMessage]) -> list[str]:
+    """
+    감독 에이전트 메시지 히스토리에서 ToolMessage들의 내용을 추출하여 '연구 노트' 리스트로 반환한다.
+    (ConductResearchSchema 호출 결과로 하위 에이전트가 압축 결과를 ToolMessage로 반환한다고 가정)
+
+    Extract research notes from ToolMessage objects in supervisor message history.
+
+    This function retrieves the compressed research findings that sub-agents
+    return as ToolMessage content. When the supervisor delegates research to
+    sub-agents via ConductResearch tool calls, each sub-agent returns its
+    compressed findings as the content of a ToolMessage. This function
+    extracts all such ToolMessage content to compile the final research notes.
+
+    Args:
+        messages (list[BaseMessage]): 감독 에이전트의 대화 메시지 리스트
+        messages (list[BaseMessage]): List of messages from supervisor's conversation history
+
+    Returns:
+        list[str]: ToolMessage의 content 텍스트 리스트(연구 노트들)  
+        list[str]: List of research note strings extracted from ToolMessage objects
+    """
+    # ToolMessage들의 content 텍스트 리스트를 반환
+    # return list of ToolMessage content texts
+    return [tool_msg.content for tool_msg in filter_messages(messages, include_types=['tool'])]    
